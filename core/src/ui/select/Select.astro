@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type SelectOption = {
+  label: string | number;
+  value: string | number | null;
+};
+interface Props extends HTMLAttributes<"select"> {
+  placeholder?: string;
+  icon?: string;
+  label?: string;
+  selectedOption?: SelectOption | null;
+  options: SelectOption[];
+}
+const { label, placeholder, selectedOption, options, ...props } = Astro.props;
+---
+
+<div>
+  {
+    label && (
+      <label
+        for={props.name}
+        class="text-secondary mb-2 block text-sm/6 font-medium"
+      >
+        {label}
+      </label>
+    )
+  }
+  <select
+    class="text-secondary placeholder:text-secondary/40 focus:ring-primary bg-surface-secondary/20 border-border-secondary block w-full rounded-md border py-1.5 pr-10 ring-inset focus:ring-1 focus:ring-inset disabled:!cursor-not-allowed disabled:!bg-gray-50 disabled:!text-gray-500 disabled:!ring-gray-200 sm:text-sm/6"
+    {...props}
+  >
+    {
+      placeholder && (
+        <option value="" selected={!selectedOption} disabled>
+          {placeholder}
+        </option>
+      )
+    }
+    {
+      options.map((option) => (
+        <option
+          value={option.value}
+          selected={selectedOption && option.value === selectedOption.value}
+        >
+          {option.label}
+        </option>
+      ))
+    }
+  </select>
+</div>

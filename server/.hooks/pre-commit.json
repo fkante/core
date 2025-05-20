@@ -1,0 +1,12 @@
+{
+  "steps": [
+    {
+      "name": "linting",
+      "command": "npm run lint"
+    },
+    {
+      "name": "db:generate",
+      "command": "npm run db:generate"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "steps": [{ "name": "building", "command": "npm run smoke-test" }]
+}

@@ -1,0 +1,80 @@
+{
+  "name": "@kovalee/core",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "smoke-test": "tsc --noEmit",
+    "lint": "eslint src",
+    "build": "rm -rf ./dist && tsc --project tsconfig.json && npx tailwindcss -i ./src/ui/input.css -o ./dist/ui/style.css && find ./src/ui -name '*.astro' -o -name '*.tsx' | while read file; do mkdir -p ./dist/ui/$(dirname \"$file\" | cut -c 9-); cp \"$file\" ./dist/ui/$(dirname \"$file\" | cut -c 9-)/; done",
+    "dev": "tsx --watch ./src/* -L --ignore ./dist --exec 'npm run build #'"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "default": "./dist/server-only/index.js",
+      "types": "./dist/server-only/index.d.ts"
+    },
+    "./ui/*": {
+      "default": "./dist/ui/*",
+      "types": "./dist/ui/*.d.ts"
+    },
+    "./ui/*.astro": {
+      "default": "./dist/ui/*.astro"
+    },
+    "./ui/style.css": "./dist/ui/style.css"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express-fileupload": "^1.4.4",
+    "@types/lodash.snakecase": "^4.1.9",
+    "@types/node": "^18.17.6",
+    "@types/pg": "^8.10.9",
+    "@types/snowflake-sdk": "^1.6.16",
+    "@types/tcp-port-used": "^1.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
+    "aws-sdk": "^2.1483.0",
+    "country-code-lookup": "^0.1.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0",
+    "stream": "^0.0.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.1.6"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix"
+  },
+  "dependencies": {
+    "@dsnp/parquetjs": "^1.3.5",
+    "@headlessui/react": "^2.2.2",
+    "@heroicons/react": "^2.1.5",
+    "@sendgrid/mail": "^7.7.0",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tanstack/react-router": "^1.120.3",
+    "airtable": "^0.12.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.0.0",
+    "express-fileupload": "^1.4.2",
+    "firebase-admin": "^11.11.0",
+    "framer-motion": "^12.9.7",
+    "google-auth-library": "^9.6.3",
+    "googleapis": "^133.0.0",
+    "knex": "^3.1.0",
+    "pg": "^8.11.3",
+    "snowflake-sdk": "^1.9.0",
+    "tailwindcss": "^4.1.5",
+    "tcp-port-used": "^1.0.2",
+    "zod": "^3.22.4"
+  }
+}
