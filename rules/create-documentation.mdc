@@ -1,0 +1,139 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Documentation Creation Guidelines
+
+Follow these principles and framework when creating or updating project documentation to ensure clarity, accessibility, and usefulness.
+
+## Key Tenets of Documentation
+
+### 1. Keep it Clear
+- **Use plain language** that's easy to understand for your target audience
+- **Define technical terms** and acronyms that some readers might not understand
+- **Make it accessible** - ask yourself if someone new to the project could understand it
+- **Avoid jargon** unless absolutely necessary, and explain it when used
+
+### 2. Keep it Concise
+- **Document only necessary information** - don't try to cover every edge case
+- **Focus on helping the majority** of readers get started and understand core concepts
+- **Keep each document focused** on a particular topic or task
+- **Move tangential information** into separate documents and link to them when helpful
+- **Remove redundant content** - if it's covered elsewhere, link to it instead
+
+### 3. Keep it Structured
+- **Put important information first** to help readers quickly assess relevance
+- **Use headings and table of contents** to make information easy to find
+- **Apply consistent styling** throughout all documentation
+- **Use text highlighting sparingly** (aim for 10% or less) to make emphasis effective
+- **Include bulleted lists and formatting** to improve scannability
+
+## Documentation Organization Framework (Diátaxis)
+
+Organize all documentation into these four categories based on purpose:
+
+### 1. **Tutorials** (Learning-oriented)
+- **Purpose**: Help users learn new concepts step-by-step
+- **Content**: Getting started guides, introductory walkthroughs
+- **Structure**: Sequential steps that build upon each other
+- **Tone**: Encouraging and supportive
+- **Example**: "Your First API Integration Tutorial"
+
+### 2. **How-to Guides** (Goal-oriented)
+- **Purpose**: Provide instructions for specific tasks
+- **Content**: Problem-solving steps, specific procedures
+- **Structure**: Clear steps to achieve a particular goal
+- **Tone**: Direct and action-oriented
+- **Example**: "How to Set Up Authentication", "How to Deploy to Production"
+
+### 3. **Explanation** (Understanding-oriented)
+- **Purpose**: Provide context and understanding of concepts
+- **Content**: Architecture decisions, design principles, background information
+- **Structure**: Contextual flow that builds understanding
+- **Tone**: Informative and comprehensive
+- **Example**: "Understanding Our Microservices Architecture", "Why We Chose This Technology Stack"
+
+### 4. **Reference** (Information-oriented)
+- **Purpose**: Provide technical specifications and lookup information
+- **Content**: API documentation, configuration options, command references
+- **Structure**: Organized for quick lookup and completeness
+- **Tone**: Factual and precise
+- **Example**: "API Reference", "Configuration Options", "Command Line Reference"
+
+## Documentation Checklist
+
+Before publishing any documentation, ensure it meets these criteria:
+
+### Content Quality
+- [ ] Uses plain, accessible language
+- [ ] Defines technical terms and acronyms
+- [ ] Focuses on essential information only
+- [ ] Fits clearly into one of the four Diátaxis categories
+
+### Structure and Format
+- [ ] Has a clear, descriptive title
+- [ ] Includes a table of contents (if longer than 3 sections)
+- [ ] Uses consistent heading hierarchy
+- [ ] Applies text highlighting sparingly and consistently
+- [ ] Includes relevant code examples with proper syntax highlighting
+
+### User Experience
+- [ ] Puts most important information first
+- [ ] Provides clear next steps or related resources
+- [ ] Links to related documentation appropriately
+- [ ] Is easy to scan and navigate
+
+## File Organization
+
+### Directory Structure
+```
+docs/
+├── tutorials/          # Learning-oriented content
+├── how-to/            # Goal-oriented guides
+├── explanation/       # Understanding-oriented content
+├── reference/         # Information-oriented content
+└── README.md          # Overview and navigation
+```
+
+### Naming Conventions
+- Use kebab-case for file names: `getting-started.md`
+- Make names descriptive: `api-authentication-guide.md`
+- Include the category in complex projects: `tutorial-first-integration.md`
+
+## Documentation Maintenance
+
+### Regular Reviews
+- **Quarterly reviews** of all documentation for accuracy
+- **Update immediately** when features change
+- **Archive outdated content** rather than leaving it to confuse users
+- **Gather feedback** from users and incorporate improvements
+
+### Identifying Gaps
+Ask these questions regularly:
+- Are there tools or features without reference documentation?
+- Do we have enough tutorials for new contributors?
+- Are common tasks covered by how-to guides?
+- Do we explain the reasoning behind our technical decisions?
+
+## Best Practices
+
+### Writing Style
+- Use active voice when possible
+- Write in second person ("you") for instructions
+- Use present tense for current functionality
+- Include examples and code snippets where helpful
+
+### Code Examples
+- Ensure all code examples are tested and working
+- Include context and expected outputs
+- Use realistic, meaningful variable names
+- Provide both minimal and comprehensive examples when appropriate
+
+### Linking Strategy
+- Link to authoritative external sources when referencing third-party tools
+- Use relative links for internal documentation
+- Ensure all links are tested and functional
+- Provide context for external links ("GitHub's official documentation explains...")
+
+Remember: Good documentation is a huge asset that promotes better collaboration, smoother onboarding, and increased adoption of your project.
