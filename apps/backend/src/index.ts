@@ -1,7 +1,8 @@
-import express, { type Request, type Response } from 'express';
 import cors from 'cors';
+import express, { type Request, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+
 import { config } from './config/index.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { apiRouter } from './routes/index.js';
@@ -82,4 +83,3 @@ const gracefulShutdown = (signal: string) => {
 
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
