@@ -6,6 +6,12 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "start:dev": "bash scripts/start.sh",
+    "start:prod": "bash scripts/deploy.sh",
+    "stop": "docker compose -f compose.yml down && docker compose -f compose.prod.yml down",
+    "logs": "docker compose -f compose.yml logs -f || docker compose -f compose.prod.yml logs -f"
+  },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@types/node": "^24.0.0",

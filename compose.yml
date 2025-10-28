@@ -1,0 +1,90 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  init: true
+  networks:
+    - network
+  environment: &environment
+    NODE_ENV: development
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    LOG_LEVEL: debug
+
+  logging: &logging
+    driver: 'json-file'
+    options:
+      max-size: '5m'
+      max-file: '10'
+      tag: '{{.Name}}'
+
+  healthcheck: &healthcheck
+    interval: 5s
+    timeout: 4s
+    retries: 3
+    start_period: 5s
+
+name: monorepo
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    <<: *defaults
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: postgres
+    volumes:
+      - postgres:/bitnami/postgresql
+    ports:
+      - 5432:5432
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+
+  backend:
+    <<: *defaults
+    command: pnpm run -C apps/backend dev
+    build:
+      context: .
+      dockerfile: apps/Dockerfile.dev
+    volumes:
+      - ./apps/backend:/home/node/apps/backend
+      - ./packages:/home/node/packages
+      - /home/node/node_modules
+      - /home/node/apps/backend/node_modules
+      - /home/node/packages/core/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'nc', '-zv', 'localhost', '3000']
+
+  frontend:
+    <<: *defaults
+    command: pnpm run -C apps/frontend dev
+    build:
+      context: .
+      dockerfile: apps/Dockerfile.dev
+    volumes:
+      - ./apps/frontend:/home/node/apps/frontend
+      - ./packages:/home/node/packages
+      - /home/node/node_modules
+      - /home/node/apps/frontend/node_modules
+      - /home/node/packages/core/node_modules
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'nc', '-zv', 'localhost', '5173']

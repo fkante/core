@@ -1,0 +1,79 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  init: true
+  networks:
+    - network
+  environment: &environment
+    NODE_ENV: production
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    LOG_LEVEL: info
+
+  logging: &logging
+    driver: 'json-file'
+    options:
+      max-size: '10m'
+      max-file: '5'
+      tag: '{{.Name}}'
+
+  healthcheck: &healthcheck
+    interval: 10s
+    timeout: 5s
+    retries: 3
+    start_period: 10s
+
+name: monorepo-prod
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/16
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    <<: *defaults
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: postgres
+    volumes:
+      - postgres:/bitnami/postgresql
+    ports:
+      - 5432:5432
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+
+  backend:
+    <<: *defaults
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1']
+
+  frontend:
+    <<: *defaults
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1']
+
