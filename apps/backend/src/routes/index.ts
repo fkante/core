@@ -1,5 +1,5 @@
-import { Router, type Request, type Response } from 'express';
 import type { Router as ExpressRouter } from 'express';
+import { type Request, type Response, Router } from 'express';
 
 export const apiRouter: ExpressRouter = Router();
 
@@ -29,7 +29,7 @@ apiRouter.get('/users', (_req: Request, res: Response) => {
 // Example POST route
 apiRouter.post('/users', (req: Request, res: Response) => {
   const { name, email } = req.body;
-  
+
   // This is just an example - add proper validation in production
   res.status(201).json({
     message: 'User created successfully',
@@ -40,4 +40,3 @@ apiRouter.post('/users', (req: Request, res: Response) => {
     },
   });
 });
-
