@@ -13,6 +13,16 @@ export const getRouter = () => {
     routeTree,
     context: { ...rqContext },
     defaultPreload: 'intent',
+    defaultViewTransition: {
+      types: ({ fromLocation, toLocation }) => {
+        if (!fromLocation) return ['nav-initial']
+        const fromDepth = fromLocation.pathname.split('/').filter(Boolean).length
+        const toDepth = toLocation.pathname.split('/').filter(Boolean).length
+        if (toDepth > fromDepth) return ['nav-forward']
+        if (toDepth < fromDepth) return ['nav-backward']
+        return ['nav-sibling']
+      },
+    },
     Wrap: (props: { children: React.ReactNode }) => {
       return <TanstackQuery.Provider {...rqContext}>{props.children}</TanstackQuery.Provider>
     },
