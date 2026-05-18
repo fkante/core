@@ -1,4 +1,4 @@
-FROM node:24.2.0-alpine AS builder
+FROM node:26-alpine AS builder
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@10.11.0 --activate

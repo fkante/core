@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { anthropic } from '@ai-sdk/anthropic'
+import { createFileRoute } from '@tanstack/react-router'
 import { convertToModelMessages, stepCountIs, streamText } from 'ai'
 
 import getTools from '@/utils/demo.tools'
@@ -33,13 +33,10 @@ export const Route = createFileRoute('/demo/api/tanchat')({
           return result.toUIMessageStreamResponse()
         } catch (error) {
           console.error('Chat API error:', error)
-          return new Response(
-            JSON.stringify({ error: 'Failed to process chat request' }),
-            {
-              status: 500,
-              headers: { 'Content-Type': 'application/json' },
-            },
-          )
+          return new Response(JSON.stringify({ error: 'Failed to process chat request' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          })
         }
       },
     },

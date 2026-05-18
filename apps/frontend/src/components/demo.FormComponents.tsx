@@ -19,11 +19,7 @@ export function SubscribeButton({ label }: { label: string }) {
   )
 }
 
-function ErrorMessages({
-  errors,
-}: {
-  errors: Array<string | { message: string }>
-}) {
+function ErrorMessages({ errors }: { errors: Array<string | { message: string }> }) {
   return (
     <>
       {errors.map((error) => (
@@ -38,13 +34,7 @@ function ErrorMessages({
   )
 }
 
-export function TextField({
-  label,
-  placeholder,
-}: {
-  label: string
-  placeholder?: string
-}) {
+export function TextField({ label, placeholder }: { label: string; placeholder?: string }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
@@ -65,13 +55,7 @@ export function TextField({
   )
 }
 
-export function TextArea({
-  label,
-  rows = 3,
-}: {
-  label: string
-  rows?: number
-}) {
+export function TextArea({ label, rows = 3 }: { label: string; rows?: number }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 

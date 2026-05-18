@@ -1,4 +1,7 @@
 node_modules
 dist
+.nx
+build
+coverage
 pnpm-lock.yaml
-packages/database/migrations
+**/routeTree.gen.ts
