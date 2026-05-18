@@ -63,12 +63,14 @@ pnpm dev
 ## 🔧 Services
 
 ### Backend (Port 3000)
+
 - Express.js with TypeScript
 - REST API endpoints
 - PostgreSQL database connection
 - Health check: http://localhost:3000/health
 
 ### Frontend
+
 - TanStack Start (React)
 - TanStack Router, Query, Form
 - API integration ready
@@ -76,6 +78,7 @@ pnpm dev
 - Production: Port 8080
 
 ### PostgreSQL (Port 5432)
+
 - Database: postgres
 - Username: postgres
 - Password: postgres

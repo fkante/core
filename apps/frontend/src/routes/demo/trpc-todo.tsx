@@ -1,14 +1,13 @@
-import { useCallback, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import { useCallback, useState } from 'react'
+
 import { useTRPC } from '@/integrations/trpc/react'
 
 export const Route = createFileRoute('/demo/trpc-todo')({
   component: TRPCTodos,
   loader: async ({ context }) => {
-    await context.queryClient.prefetchQuery(
-      context.trpc.todos.list.queryOptions(),
-    )
+    await context.queryClient.prefetchQuery(context.trpc.todos.list.queryOptions())
   },
 })
 

@@ -1,3 +1,41 @@
+# OS
 .DS_Store
+
+# Deps
 node_modules
 
+# Build output
+dist
+build
+.output
+.vinxi
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Env (per-app .env files; .env.example is checked in)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor
+.idea
+*.swp
+*.swo
+
+# Coverage / test artifacts
+coverage
+.vitest
+
+# Misc
+.cache
+.turbo

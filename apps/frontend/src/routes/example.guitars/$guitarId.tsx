@@ -1,4 +1,5 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
+
 import guitars from '../../data/example-guitars'
 
 export const Route = createFileRoute('/example/guitars/$guitarId')({
@@ -27,9 +28,7 @@ function RouteComponent() {
         <h1 className="text-3xl font-bold mb-4">{guitar.name}</h1>
         <p className="text-gray-300 mb-6">{guitar.description}</p>
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-emerald-400">
-            ${guitar.price}
-          </div>
+          <div className="text-2xl font-bold text-emerald-400">${guitar.price}</div>
           <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg transition-colors">
             Add to Cart
           </button>

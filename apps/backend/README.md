@@ -51,22 +51,28 @@ pnpm start
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /health
 ```
+
 Returns server health status.
 
 ### API Root
+
 ```
 GET /api
 ```
+
 Returns API information and available endpoints.
 
 ### Users
+
 ```
 GET /api/users
 POST /api/users
 ```
+
 Example CRUD endpoints.
 
 ## Environment Variables
@@ -90,4 +96,3 @@ src/
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
 - `pnpm format` - Format code with Prettier
-

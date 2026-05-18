@@ -1,9 +1,7 @@
-import type { Router as ExpressRouter } from 'express';
-import { type Request, type Response, Router } from 'express';
+import { type Request, type Response, Router } from 'express'
 
-export const apiRouter: ExpressRouter = Router();
+export const apiRouter: Router = Router()
 
-// Example route
 apiRouter.get('/', (_req: Request, res: Response) => {
   res.json({
     message: 'Welcome to the API',
@@ -13,24 +11,21 @@ apiRouter.get('/', (_req: Request, res: Response) => {
       api: '/api',
       users: '/api/users',
     },
-  });
-});
+  })
+})
 
-// Example users route
 apiRouter.get('/users', (_req: Request, res: Response) => {
   res.json({
     users: [
       { id: 1, name: 'John Doe', email: 'john@example.com' },
       { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
     ],
-  });
-});
+  })
+})
 
-// Example POST route
 apiRouter.post('/users', (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { name, email } = req.body as { name?: string; email?: string }
 
-  // This is just an example - add proper validation in production
   res.status(201).json({
     message: 'User created successfully',
     user: {
@@ -38,5 +33,5 @@ apiRouter.post('/users', (req: Request, res: Response) => {
       name,
       email,
     },
-  });
-});
+  })
+})

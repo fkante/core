@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import './tanchat.css'
+
+import { useChat } from '@ai-sdk/react'
 import { createFileRoute } from '@tanstack/react-router'
+import type { UIMessage } from 'ai'
+import { DefaultChatTransport } from 'ai'
 import { Send } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
-import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
-import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport } from 'ai'
-
-import type { UIMessage } from 'ai'
 
 import GuitarRecommendation from '@/components/example-GuitarRecommendation'
-
-import './tanchat.css'
 
 function InitalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,8 +22,8 @@ function InitalLayout({ children }: { children: React.ReactNode }) {
           <span className="text-white">TanStack</span> Chat
         </h1>
         <p className="text-gray-400 mb-6 w-2/3 mx-auto text-lg">
-          You can ask me about anything, I might or might not have a good
-          answer, but you can still ask.
+          You can ask me about anything, I might or might not have a good answer, but you can still
+          ask.
         </p>
         {children}
       </div>
@@ -45,8 +44,7 @@ function Messages({ messages }: { messages: Array<UIMessage> }) {
 
   useEffect(() => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
     }
   }, [messages])
 
@@ -85,12 +83,7 @@ function Messages({ messages }: { messages: Array<UIMessage> }) {
                         key={index}
                       >
                         <ReactMarkdown
-                          rehypePlugins={[
-                            rehypeRaw,
-                            rehypeSanitize,
-                            rehypeHighlight,
-                            remarkGfm,
-                          ]}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight, remarkGfm]}
                         >
                           {part.text}
                         </ReactMarkdown>
@@ -104,12 +97,11 @@ function Messages({ messages }: { messages: Array<UIMessage> }) {
                   ) {
                     return (
                       <div key={index} className="max-w-[80%] mx-auto">
-                        <GuitarRecommendation
-                          id={(part.output as { id: string })?.id}
-                        />
+                        <GuitarRecommendation id={(part.output as { id: string })?.id} />
                       </div>
                     )
                   }
+                  return null
                 })}
               </div>
             </div>
@@ -154,8 +146,7 @@ function ChatPage() {
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement
                   target.style.height = 'auto'
-                  target.style.height =
-                    Math.min(target.scrollHeight, 200) + 'px'
+                  target.style.height = Math.min(target.scrollHeight, 200) + 'px'
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {

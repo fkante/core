@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-
 import { createFileRoute } from '@tanstack/react-router'
 
-function getNames() {
+function getNames(): Promise<Array<string>> {
   return fetch('/demo/api/names').then((res) => res.json())
 }
 
@@ -11,7 +10,7 @@ export const Route = createFileRoute('/demo/start/api-request')({
 })
 
 function Home() {
-  const { data: names = [] } = useQuery({
+  const { data: names = [] } = useQuery<Array<string>>({
     queryKey: ['names'],
     queryFn: getNames,
   })

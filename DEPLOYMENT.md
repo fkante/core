@@ -21,12 +21,14 @@ pnpm start:dev
 ```
 
 This will:
+
 - Start PostgreSQL database
 - Build and start backend on port 3000
 - Build and start frontend on port 5173
 - Mount source code as volumes for hot-reloading
 
 **URLs:**
+
 - Backend: http://localhost:3000
 - Frontend: http://localhost:5173
 - Database: postgresql://postgres:postgres@localhost:5432/postgres
@@ -40,12 +42,14 @@ pnpm start:prod
 ```
 
 This will:
+
 - Start PostgreSQL database
 - Build optimized production Docker images
 - Start backend on port 3000
 - Start frontend (via nginx) on port 8080
 
 **URLs:**
+
 - Backend: http://localhost:3000
 - Frontend: http://localhost:8080
 - Database: postgresql://postgres:postgres@localhost:5432/postgres
@@ -71,6 +75,7 @@ pnpm logs
 ### `compose.yml` (Development)
 
 Used for local development with:
+
 - Volume mounts for hot-reloading
 - Development dependencies included
 - Debug logging enabled
@@ -79,6 +84,7 @@ Used for local development with:
 ### `compose.prod.yml` (Production)
 
 Used for production deployments with:
+
 - Multi-stage builds for optimized images
 - No volume mounts (uses built artifacts)
 - Production dependencies only
@@ -90,12 +96,14 @@ Used for production deployments with:
 ### Backend (`apps/backend/Dockerfile`)
 
 Multi-stage build:
+
 1. **Builder stage**: Installs dependencies and compiles TypeScript to JavaScript
 2. **Production stage**: Copies only compiled code and production dependencies
 
 ### Frontend (`apps/frontend/Dockerfile`)
 
 Multi-stage build:
+
 1. **Builder stage**: Installs dependencies and builds Vite application
 2. **Production stage**: Serves static files via nginx with SPA routing support
 
@@ -202,10 +210,12 @@ docker compose logs -f postgres
 ## Database Migrations
 
 When database migrations are set up, uncomment the migration commands in:
+
 - `scripts/start.sh` (development)
 - `scripts/deploy.sh` (production)
 
 Example:
+
 ```bash
 echo "🔄 Migrating database..."
 pnpm run -C packages/database drizzle-kit migrate
@@ -213,4 +223,3 @@ pnpm run -C packages/database drizzle-kit migrate
 echo "🔄 Seeding database..."
 pnpm run -C packages/database seed
 ```
-
