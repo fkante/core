@@ -1,131 +1,98 @@
-# Monorepo Boilerplate
+# Monorepo
 
-A modern monorepo setup with Node.js, TypeScript, and PNPM workspaces.
+A modern TypeScript monorepo: TanStack Start full-stack frontend, a dedicated Node/Express backend, and a shared `core` package. Managed with **pnpm workspaces + catalog** and **Nx** for task orchestration and caching.
 
-## 📦 Structure
+## Structure
 
 ```
-monorepo-boilerplate/
+core/
 ├── apps/
-│   ├── backend/      # Express.js API server
-│   ├── frontend/     # TanStack Start React app
-│   └── gateway/      # API gateway (coming soon)
+│   ├── backend/      # Express 5 API server (heavy tasks, crons)
+│   └── frontend/     # TanStack Start (React 19.2, Vite 7, tRPC)
 ├── packages/
-│   └── core/         # Shared utilities and types
-└── scripts/          # Development scripts
+│   └── core/         # Shared utilities and types (ESM, composite)
+├── scripts/          # Docker dev/deploy helpers
+├── compose.yml       # Dev docker compose
+├── compose.prod.yml  # Prod docker compose
+├── nx.json           # Nx pipelines + cache
+├── pnpm-workspace.yaml
+└── tsconfig.base.json
 ```
 
-## 🚀 Quick Start
+## Prerequisites
 
-### Prerequisites
-
-- Node.js >= 24.2.0
-- PNPM >= 10.11.0
-- Docker & Docker Compose
-
-### Installation
+- **Node.js >= 26** (managed via `.nvmrc`)
+- **pnpm >= 10.11**
+- Docker & Docker Compose (only needed for the containerized workflows)
 
 ```bash
-# Install dependencies
+nvm use            # picks up .nvmrc → Node 26
 pnpm install
 ```
 
-### Running with Docker
+## Running locally
+
+The root `package.json` exposes scripts that fan out across the workspace.
 
 ```bash
-# Development mode (with hot-reloading)
-pnpm start:dev
-
-# Production mode (optimized builds)
-pnpm start:prod
-
-# Stop all services
-pnpm stop
-
-# View logs
-pnpm logs
-```
-
-For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
-
-### Development (Local - without Docker)
-
-```bash
-# Backend server
-cd apps/backend
+# Run everything in parallel (frontend + backend + core watcher)
 pnpm dev
 
-# Frontend app
-cd apps/frontend
-pnpm dev
+# Or run one at a time
+pnpm dev:frontend          # vite dev on :5173
+pnpm dev:backend           # node --watch with native --env-file-if-exists
+pnpm dev:core              # tsc -w (watch + emit declarations)
+
+# Production builds + start
+pnpm build                 # nx run-many -t build (cached)
+pnpm build:frontend
+pnpm build:backend
+pnpm start:frontend        # node .output/server/index.mjs
+pnpm start:backend         # node --env-file-if-exists=.env dist/index.js
 ```
 
-## 🔧 Services
+Backend env validation lives in `apps/backend/src/config/index.ts` (Zod 4 via `@t3-oss/env-core`). Copy `apps/backend/.env.example` → `apps/backend/.env` before running.
 
-### Backend (Port 3000)
-
-- Express.js with TypeScript
-- REST API endpoints
-- PostgreSQL database connection
-- Health check: http://localhost:3000/health
-
-### Frontend
-
-- TanStack Start (React)
-- TanStack Router, Query, Form
-- API integration ready
-- Development: Port 5173
-- Production: Port 8080
-
-### PostgreSQL (Port 5432)
-
-- Database: postgres
-- Username: postgres
-- Password: postgres
-
-## 📝 Available Scripts
-
-### Root Scripts (package.json)
+## Quality gates
 
 ```bash
-# Development mode with hot-reloading
-pnpm start:dev
-
-# Production mode with optimized builds
-pnpm start:prod
-
-# Stop all Docker services
-pnpm stop
-
-# View logs from services
-pnpm logs
+pnpm typecheck             # nx run-many -t typecheck
+pnpm lint                  # eslint . (flat config at root)
+pnpm lint:fix
+pnpm format                # prettier --write .
+pnpm format:check
+pnpm test                  # nx run-many -t test
+pnpm graph                 # nx graph (visualize project dependencies)
 ```
 
-### Direct Docker Commands
+Nx caches `build`, `test`, `lint`, and `typecheck`. A repeat invocation with no changes returns from cache (verify with `pnpm build` run twice).
+
+## Running with Docker
 
 ```bash
-# Development
-docker compose -f compose.yml up -d --build
-docker compose -f compose.yml logs -f
-docker compose -f compose.yml down
-
-# Production
-docker compose -f compose.prod.yml up -d --build
-docker compose -f compose.prod.yml logs -f
-docker compose -f compose.prod.yml down
-
-# Remove all containers and volumes
-docker compose down -v
+pnpm start:dev             # development compose with hot-reload
+pnpm start:prod            # production compose with optimized builds
+pnpm stop                  # tear both stacks down
+pnpm logs                  # follow logs
 ```
 
-For more deployment options, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for deployment details.
 
-## 🛠 Tech Stack
+## Services
 
-- **Runtime:** Node.js 24.2.0
-- **Package Manager:** PNPM 10.11.0
-- **Language:** TypeScript 5.7+
-- **Backend:** Express.js
-- **Frontend:** React 19, TanStack ecosystem
-- **Database:** PostgreSQL 16
-- **Container:** Docker Compose
+| Service  | Port | Description                                               |
+| -------- | ---- | --------------------------------------------------------- |
+| frontend | 5173 | TanStack Start dev server (prod served on 8080 via nginx) |
+| backend  | 3000 | Express 5 API. Health: `GET /health`                      |
+| postgres | 5432 | `postgres / postgres / postgres` (db/user/password)       |
+
+## Tech stack
+
+- **Runtime:** Node.js 26
+- **Package manager:** pnpm 10.11 with **catalog** for version dedup (`pnpm-workspace.yaml`)
+- **Build orchestration:** Nx 21 (`nx.json`)
+- **Language:** TypeScript 6 (strict + `noUncheckedIndexedAccess` + `verbatimModuleSyntax`)
+- **Backend:** Express 5, Zod 4, native `--env-file-if-exists`, `@t3-oss/env-core`
+- **Frontend:** React 19.2, Vite 7, TanStack Start/Router/Query/Form/Table, tRPC 11, Tailwind 4, AI SDK 5
+- **Shared:** `packages/core` published as ESM with `exports` map and project references
+- **Lint/format:** ESLint 9 flat config (React Compiler + react-hooks + simple-import-sort), Prettier 3
