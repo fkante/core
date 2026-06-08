@@ -11,6 +11,9 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/.output/**',
+      '**/.nitro/**',
+      '**/.vinxi/**',
       '**/.nx/**',
       '**/node_modules/**',
       '**/build/**',
@@ -71,14 +74,9 @@ export default tseslint.config(
   },
 
   {
-    files: ['**/demo.*', '**/demo-*', '**/demo/**', '**/example-*', '**/example.*'],
+    files: ['apps/backend/src/**/*.ts'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      'react/jsx-key': 'off',
-      'react/no-unescaped-entities': 'off',
-      'react-compiler/react-compiler': 'off',
-      'react-hooks/exhaustive-deps': 'off',
+      'no-console': 'error',
     },
   },
 

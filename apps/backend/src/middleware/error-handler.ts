@@ -1,6 +1,8 @@
 import type { ErrorRequestHandler } from 'express'
 import { ZodError } from 'zod'
 
+import { logger } from '../lib/logger.js'
+
 export class AppError extends Error {
   constructor(
     public statusCode: number,
@@ -13,7 +15,7 @@ export class AppError extends Error {
   }
 }
 
-export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   if (err instanceof ZodError) {
     res.status(400).json({
       error: 'Validation Error',
@@ -31,9 +33,10 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     return
   }
 
-  console.error('ERROR:', err)
+  const requestLogger = req.log ?? logger
+  requestLogger.error({ err }, 'Unhandled request error')
 
-  const error = err as Error
+  const error = err instanceof Error ? err : new Error(String(err))
 
   res.status(500).json({
     error: 'Internal Server Error',

@@ -3,22 +3,20 @@ import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure } from './init'
 
-const todos = [
-  { id: 1, name: 'Get groceries' },
-  { id: 2, name: 'Buy a new phone' },
-  { id: 3, name: 'Finish the project' },
-]
-
-const todosRouter = {
-  list: publicProcedure.query(() => todos),
-  add: publicProcedure.input(z.object({ name: z.string() })).mutation(({ input }) => {
-    const newTodo = { id: todos.length + 1, name: input.name }
-    todos.push(newTodo)
-    return newTodo
+/**
+ * EXAMPLE tRPC router. tRPC is scaffolded but optional (see STACK_BOILERPLATE.md
+ * section 10) — the primary data path is REST via `apiFetch`. This trivial
+ * `hello` procedure proves the wiring (superjson transformer, the `/api/trpc`
+ * fetch handler, and the typed client). Add real procedures here, or delete the
+ * tRPC integration if you do not need it.
+ */
+const exampleRouter = {
+  hello: publicProcedure.input(z.object({ name: z.string().optional() })).query(({ input }) => {
+    return { greeting: `Hello, ${input.name ?? 'world'}!` }
   }),
 } satisfies TRPCRouterRecord
 
 export const trpcRouter = createTRPCRouter({
-  todos: todosRouter,
+  example: exampleRouter,
 })
 export type TRPCRouter = typeof trpcRouter

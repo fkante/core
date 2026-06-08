@@ -1,7 +1,13 @@
 node_modules
 dist
+.output
+.nitro
+.vinxi
 .nx
 build
 coverage
 pnpm-lock.yaml
 **/routeTree.gen.ts
+*.md
+**/*.md
+**/drizzle/**
