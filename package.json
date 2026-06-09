@@ -8,6 +8,8 @@
     "start:prod": "bash scripts/deploy.sh",
     "stop": "docker compose -f compose.yml down && docker compose -f compose.prod.yml down",
     "logs": "docker compose -f compose.yml logs -f || docker compose -f compose.prod.yml logs -f",
+    "bootstrap": "docker compose -f compose.yml up -d --wait postgres && pnpm --filter backend db:migrate && pnpm --filter backend db:seed",
+    "db:reset": "docker compose -f compose.yml exec -T -e PGPASSWORD=postgres postgres psql -U postgres -d app -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public; DROP SCHEMA IF EXISTS drizzle CASCADE;' && pnpm --filter backend db:migrate && pnpm --filter backend db:seed",
     "dev": "nx run-many -t dev --parallel=10",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:backend": "pnpm --filter backend dev",

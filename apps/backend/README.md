@@ -1,98 +1,60 @@
-# Backend Server
+# Backend
 
-Modern Express.js backend server with TypeScript.
+Express 5 API server with TypeScript: cookie-session auth (email/password + Google OAuth), PostgreSQL + Drizzle ORM, structured logging, and a testable `createApp` factory.
 
 ## Features
 
-- 🚀 Express.js with TypeScript
-- 🔒 Security headers with Helmet
-- 🌐 CORS support
-- 📝 Request logging with Morgan
-- ✅ Input validation with Zod
-- 🔄 Hot reload with tsx
+- 🚀 Express 5 with TypeScript (ESM, NodeNext)
+- 🔒 Security headers (Helmet), header-presence CSRF, role gate
+- 🔑 Cookie-session auth: argon2id passwords + Google ID-token verification
+- 🗄️ PostgreSQL + Drizzle ORM (typed schema, generated migrations, idempotent seed)
+- ✅ Env + input validation with Zod (`@t3-oss/env-core`)
+- 📝 Structured request logging with pino (pino-http)
+- 🧪 Vitest with a transactional DB harness
 - 🐳 Docker support
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+- Node.js >= 26
+- pnpm >= 10.11
+- PostgreSQL (via `docker compose -f compose.yml up -d postgres` from the repo root)
 
-- Node.js >= 24.2.0
-- pnpm >= 10.11.0
-
-### Installation
+## Getting started
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Copy environment variables
-cp .env.example .env
-```
-
-### Development
-
-```bash
-# Start development server with hot reload
-pnpm dev
-```
-
-The server will start on `http://localhost:3000`
-
-### Building for Production
-
-```bash
-# Build the project
-pnpm build
-
-# Start production server
-pnpm start
-```
-
-## API Endpoints
-
-### Health Check
-
-```
-GET /health
-```
-
-Returns server health status.
-
-### API Root
-
-```
-GET /api
-```
-
-Returns API information and available endpoints.
-
-### Users
-
-```
-GET /api/users
-POST /api/users
-```
-
-Example CRUD endpoints.
-
-## Environment Variables
-
-See `.env.example` for all available configuration options.
-
-## Project Structure
-
-```
-src/
-├── config/          # Configuration files
-├── middleware/      # Express middleware
-├── routes/          # API routes
-└── index.ts         # Application entry point
+cp .env.example .env            # fill SESSION_SECRET, GOOGLE_CLIENT_ID, …
+pnpm db:migrate && pnpm db:seed # or `pnpm bootstrap` from the repo root
+pnpm dev                        # http://localhost:3000
 ```
 
 ## Scripts
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm lint` - Run ESLint
-- `pnpm format` - Format code with Prettier
+- `pnpm dev` — watch mode (native `--watch` + tsx)
+- `pnpm build` / `pnpm start` — compile with tsc / run `dist/index.js`
+- `pnpm test` — Vitest (needs Postgres; runs against the `app_test` DB)
+- `pnpm db:generate` / `db:migrate` / `db:seed` — drizzle-kit + seed
+- `pnpm lint` / `pnpm format`
+
+## API endpoints
+
+- `GET /health` — health status
+- `GET /api/auth/session` · `POST /api/auth/{signup,signin,google,signout}` — auth
+- `GET|POST /api/notes` — EXAMPLE protected feature (delete when starting a real app)
+
+## Project structure
+
+```
+src/
+├── app.ts            # createApp(options) factory (testable; injectable DB)
+├── index.ts          # bootstrap: connect → verify schema → listen → graceful shutdown
+├── config/           # Zod-validated env → typed config
+├── db/               # pg Pool + drizzle, schema/, seed, schema-check
+├── lib/              # session, google-verify, logger, http-logger, rate-limit, pii-scrub
+├── middleware/       # session, csrf, require-admin, error-handler
+├── routes/           # createApiRouter → auth, notes
+├── test/             # Vitest harness (transactional DB)
+└── types/express.d.ts
+```
+
+See the root `STACK_BOILERPLATE.md` for the full architecture and conventions.

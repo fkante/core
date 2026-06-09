@@ -1,37 +1,21 @@
-import { type Request, type Response, Router } from 'express'
+import { Router } from 'express'
 
-export const apiRouter: Router = Router()
+import { type Database, db as defaultDb } from '../db/index.js'
+import { csrfMiddleware } from '../middleware/csrf.js'
+import { createAuthRouter, type CreateAuthRouterOptions } from './auth.js'
+import { createNotesRouter } from './notes.js'
 
-apiRouter.get('/', (_req: Request, res: Response) => {
-  res.json({
-    message: 'Welcome to the API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      api: '/api',
-      users: '/api/users',
-    },
-  })
-})
+export type CreateApiRouterOptions = CreateAuthRouterOptions
 
-apiRouter.get('/users', (_req: Request, res: Response) => {
-  res.json({
-    users: [
-      { id: 1, name: 'John Doe', email: 'john@example.com' },
-      { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    ],
-  })
-})
+export function createApiRouter(
+  database: Database = defaultDb,
+  options: CreateApiRouterOptions = {},
+): Router {
+  const router = Router()
+  router.use(csrfMiddleware)
+  router.use('/auth', createAuthRouter(database, options))
+  router.use('/notes', createNotesRouter(database))
+  return router
+}
 
-apiRouter.post('/users', (req: Request, res: Response) => {
-  const { name, email } = req.body as { name?: string; email?: string }
-
-  res.status(201).json({
-    message: 'User created successfully',
-    user: {
-      id: Math.floor(Math.random() * 1000),
-      name,
-      email,
-    },
-  })
-})
+export const apiRouter: Router = createApiRouter()

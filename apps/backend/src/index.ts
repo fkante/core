@@ -1,67 +1,61 @@
-import cors from 'cors'
-import express, { type Request, type Response } from 'express'
-import helmet from 'helmet'
-import morgan from 'morgan'
-
+import { createApp } from './app.js'
 import { config } from './config/index.js'
-import { errorHandler } from './middleware/error-handler.js'
-import { apiRouter } from './routes/index.js'
+import { connectToDatabase, pool } from './db/index.js'
+import { assertSchemaPresent, SchemaMissingError } from './db/schema-check.js'
+import { logger } from './lib/logger.js'
 
-const app = express()
+try {
+  await connectToDatabase()
+  logger.info('Database connection established')
+} catch (error) {
+  logger.error({ err: error }, 'Failed to connect to database on boot')
+  process.exit(1)
+}
 
-app.use(helmet())
+if (config.nodeEnv !== 'test') {
+  try {
+    await assertSchemaPresent()
+    logger.info('Database schema verified')
+  } catch (error) {
+    if (error instanceof SchemaMissingError) {
+      logger.error(
+        'Database schema not found. Run: pnpm --filter backend db:migrate && pnpm --filter backend db:seed',
+      )
+      process.exit(1)
+    }
+    logger.error({ err: error }, 'Failed to verify database schema on boot')
+    process.exit(1)
+  }
+}
 
-app.use(
-  cors({
-    origin: config.cors.origin,
-    credentials: true,
-  }),
-)
-
-app.use(morgan(config.nodeEnv === 'development' ? 'dev' : 'combined'))
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-app.get('/health', (_req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: config.nodeEnv,
-  })
-})
-
-app.use('/api', apiRouter)
-
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    error: 'Not Found',
-    message: 'The requested resource does not exist',
-  })
-})
-
-app.use(errorHandler)
+const app = createApp()
 
 const server = app.listen(config.port, config.host, () => {
-  console.log(`
-🚀 Server is running!
-📍 URL: http://${config.host}:${config.port}
-🌍 Environment: ${config.nodeEnv}
-📅 Started at: ${new Date().toISOString()}
-  `)
+  logger.info(
+    {
+      url: `http://${config.host}:${config.port}`,
+      environment: config.nodeEnv,
+      startedAt: new Date().toISOString(),
+    },
+    'Server started',
+  )
 })
 
 const gracefulShutdown = (signal: string) => {
-  console.log(`\n${signal} received. Starting graceful shutdown...`)
+  logger.info({ signal }, 'Received shutdown signal, closing server')
 
-  server.close(() => {
-    console.log('HTTP server closed')
+  server.close(async () => {
+    logger.info('HTTP server closed')
+    try {
+      await pool.end()
+    } catch (error) {
+      logger.error({ err: error }, 'Error while closing database pool')
+    }
     process.exit(0)
   })
 
   setTimeout(() => {
-    console.error('Forced shutdown after timeout')
+    logger.error('Forced shutdown after timeout')
     process.exit(1)
   }, 10_000)
 }

@@ -12,13 +12,10 @@ echo ""
 echo "🔄 Starting PostgreSQL..."
 docker compose -f compose.prod.yml up -d --wait postgres
 
-# Uncomment when database migrations are set up
-# echo ""
-# echo "🔄 Migrating database..."
-# pnpm run -C packages/database drizzle-kit migrate
-#
-# echo "🔄 Seeding database..."
-# pnpm run -C packages/database seed
+echo ""
+echo "🔄 Migrating and seeding database..."
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app pnpm --filter backend db:migrate
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app pnpm --filter backend db:seed
 
 echo ""
 echo "🔨 Building and starting services..."

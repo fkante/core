@@ -2,6 +2,10 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+onlyBuiltDependencies:
+  - argon2
+  - esbuild
+
 catalog:
   # Language + runtime types
   typescript: ^6.0.3

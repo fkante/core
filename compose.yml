@@ -5,8 +5,13 @@ x-defaults: &defaults
     - network
   environment: &environment
     NODE_ENV: development
-    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app
     LOG_LEVEL: debug
+    PORT: '3000'
+    SESSION_SECRET: ${SESSION_SECRET:-dev-only-session-secret-min-32-characters}
+    ADMIN_BOOTSTRAP_EMAIL: ${ADMIN_BOOTSTRAP_EMAIL:-admin@example.com}
+    GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+    CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
 
   logging: &logging
     driver: 'json-file'
@@ -40,11 +45,11 @@ services:
     environment:
       POSTGRESQL_USERNAME: postgres
       POSTGRESQL_PASSWORD: postgres
-      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_DATABASE: app
     volumes:
       - postgres:/bitnami/postgresql
     ports:
-      - 5432:5432
+      - 5433:5432
     healthcheck:
       <<: *healthcheck
       test: ['CMD', 'pg_isready', '-U', 'postgres']
